@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online video downloader for YouTube, TikTok, Instagram and more. Download videos in MP4, WebM or MP3 format with multiple quality options.">
+    <meta name="keywords" content="video downloader, YouTube downloader, TikTok downloader, Instagram downloader, free video download, online video converter">
+    <meta name="author" content="VidSnap">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="VidSnap - Free Online Video Downloader">
+    <meta property="og:description" content="Download videos from YouTube, facebook, snapchat,TikTok, Instagram and other platforms for free">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vidsnap.example.com">
+    <meta property="og:image" content="https://vidsnap.example.com/og-image.jpg">
+    <link rel="canonical" href="https://vidsnap.example.com">
+    <title>VidSnap - Download Videos from YouTube, TikTok, Instagram | Free Online Video Downloader</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4285f4;
+            margin-bottom: 8px;
+        }
+        .tagline {
+            color: #666;
+            font-size: 14px;
+        }
+        .url-input {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .url-input-field {
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        .url-input-field:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            flex: 1;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background-color: #4285f4;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #3367d6;
+        }
+        .btn-secondary {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background-color: #e1e1e1;
+        }
+        .preview-container {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .thumbnail {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            background-color: #eee;
+        }
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 18px;
+            line-height: 1.3;
+        }
+        .video-meta {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: flex;
+            gap: 15px;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .download-options {
+            margin-bottom: 20px;
+        }
+        .option-group {
+            margin-bottom: 15px;
+        }
+        .option-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .option-select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background-color: white;
+        }
+        .download-btn {
+            background-color: #34a853;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .download-btn:hover {
+            background-color: #2d9248;
+        }
+        .download-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .error-message {
+            color: #ea4335;
+            text-align: center;
+            padding: 15px;
+            display: none;
+            background-color: #fde8e8;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .supported-platforms {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .platform-icon {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .platform-icon:hover {
+            opacity: 1;
+        }
+        .download-progress {
+            display: none;
+            margin-top: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #4285f4;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #666;
+        }
+        .download-complete {
+            display: none;
+            text-align: center;
+            padding: 15px;
+            background-color: #e6f4ea;
+            border-radius: 8px;
+            color: #34a853;
+            margin-top: 20px;
+            animation: fadeIn 0.5s;
+        }
+        .history-section {
+            margin-top: 30px;
+            display: none;
+        }
+        .history-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .history-list {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .history-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .history-item:hover {
+            background-color: #f9f9f9;
+        }
+        .history-thumbnail {
+            width: 50px;
+            height: 30px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        .history-info {
+            flex: 1;
+            overflow: hidden;
+        }
+        .history-name {
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+        .history-meta {
+            font-size: 12px;
+            color: #999;
+        }
+        .clear-history {
+            color: #4285f4;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            display: inline-block;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Ad Containers */
+        .ad-container {
+            margin: 25px 0;
+            background: #f9f9f9;
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: center;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ad-leaderboard {
+            width: 100%;
+            min-height: 90px;
+        }
+        .ad-sidebar {
+            width: 300px;
+            min-height: 250px;
+            margin: 0 auto;
+        }
+        .ad-label {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        /* Structured Data */
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .breadcrumb a {
+            color: #4285f4;
+            text-decoration: none;
+        }
+        /* Footer */
+        .footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .footer-links a {
+            color: #4285f4;
+            text-decoration: none;
+        }
+        /* Responsive Layout */
+        .main-content {
+            display: flex;
+            gap: 20px;
+        }
+        .content-primary {
+            flex: 1;
+        }
+        .content-secondary {
+            width: 300px;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .content-secondary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb">
+            <a href="/">Home</a> > <a href="/video-downloader">Video Downloader</a> > <span>Online Video Downloader</span>
+        </div>
+
+        <!-- Leaderboard Ad -->
+        <div class="ad-label">ADVERTISEMENT</div>
+        <div class="ad-container ad-leaderboard">
+            <!-- AdSense Leaderboard Ad -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="XXXXXXXXXX"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <div class="main-content">
+            <div class="content-primary">
+                <div class="header">
+                    <div class="logo">VidSnap</div>
+                    <div class="tagline">Download videos from YouTube, TikTok, Instagram and more</div>
+                </div>
+                
+                <div class="url-input">
+                    <input type="text" class="url-input-field" placeholder="Paste video URL here (e.g., YouTube, TikTok, Instagram)">
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="pasteBtn">
+                            <span class="icon">📋</span> Paste URL
+                        </button>
+                        <button class="btn btn-secondary" id="fetchBtn">
+                            <span class="icon">🔍</span> Fetch Video
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="error-message" id="errorMessage">
+                    <span class="icon">⚠️</span> <span id="errorText">Invalid URL or unsupported platform</span>
+                </div>
+                
+                <div class="preview-container" id="previewContainer">
+                    <img src="" class="thumbnail" id="videoThumbnail">
+                    <div class="video-title" id="videoTitle">Video Title</div>
+                    <div class="video-meta">
+                        <span class="meta-item" id="videoPlatform">📺 Platform</span>
+                        <span class="meta-item" id="videoDuration">⏱️ 0:00</span>
+                        <span class="meta-item" id="videoResolution">🖥️ 1080p</span>
+                    </div>
+                    
+                    <div class="download-options">
+                        <div class="option-group">
+                            <label class="option-label">Quality</label>
+                            <select class="option-select" id="qualitySelect">
+                                <!-- Options will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        
+                        <div class="option-group">
+                            <label class="option-label">Format</label>
+                            <select class="option-select" id="formatSelect">
+                                <option value="mp4" selected>MP4 (Video)</option>
+                                <option value="webm">WebM (Video)</option>
+                                <option value="mp3">MP3 (Audio only)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="download-btn" id="downloadBtn">Download Video</button>
+                </div>
+                
+                <div class="download-progress" id="downloadProgress">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressStatus">Downloading...</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                </div>
+                
+                <div class="download-complete" id="downloadComplete">
+                    <span class="icon">✅</span> Download complete! File saved to your device.
+                </div>
+                
+                <!-- Mid-content Ad -->
+                <div class="ad-label">ADVERTISEMENT</div>
+                <div class="ad-container">
+                    <!-- AdSense Rectangle Ad -->
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                         data-ad-slot="XXXXXXXXXX"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+                
+                <div class="history-section" id="historySection">
+                    <div class="history-title">
+                        <span>Recent Downloads</span>
+                        <span class="clear-history" id="clearHistory">Clear All</span>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <!-- History items will be added here by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="supported-platforms">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" class="platform-icon" alt="YouTube" title="YouTube">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3046/3046126.png" class="platform-icon" alt="TikTok" title="TikTok">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="platform-icon" alt="Instagram" title="Instagram">
+                    <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" class="platform-icon" alt="Twitter" title="Twitter">
+                    <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" class="platform-icon" alt="Facebook" title="Facebook">
+                </div>
+            </div>
+            
+            <div class="content-secondary">
+                <!-- Sidebar Ad -->
+                <div class="ad-label">ADVERTISEMENT</div>
+                <div class="ad-container ad-sidebar">
+                    <!-- AdSense Sidebar Ad -->
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                         data-ad-slot="XXXXXXXXXX"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+                
+                <!-- How to Use Section -->
+                <div style="background: white; border-radius: 8px; padding: 15px; margin-top: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="margin-top: 0; font-size: 18px;">How to Download Videos</h3>
+                    <ol style="padding-left: 20px; font-size: 14px;">
+                        <li>Copy the video URL from YouTube, TikTok, etc.</li>
+                        <li>Paste the URL in the input field above</li>
+                        <li>Select your preferred quality and format</li>
+                        <li>Click "Download Video" to save it</li>
+                    </ol>
+                </div>
+                
+                <!-- FAQ Section -->
+                <div style="background: white; border-radius: 8px; padding: 15px; margin-top: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="margin-top: 0; font-size: 18px;">Frequently Asked Questions</h3>
+                    <div style="font-size: 14px;">
+                        <p><strong>Is this service free?</strong><br>
+                        Yes, our video downloader is completely free to use.</p>
+                        
+                        <p><strong>What platforms do you support?</strong><br>
+                        We support YouTube, TikTok, Instagram, Twitter, and more.</p>
+                        
+                        <p><strong>Is it legal to download videos?</strong><br>
+                        Downloading videos for personal use is generally permitted, but check the platform's terms of service.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Ad -->
+        <div class="ad-label">ADVERTISEMENT</div>
+        <div class="ad-container ad-leaderboard">
+            <!-- AdSense Footer Ad -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="XXXXXXXXXX"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-links">
+                <a href="/about">About Us</a>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+                <a href="/contact">Contact</a>
+                <a href="/dmca">DMCA</a>
+            </div>
+            <div>© 2023 VidSnap - Free Online Video Downloader. All rights reserved.</div>
+        </div>
+    </div>
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "VidSnap - Free Online Video Downloader",
+      "url": "https://vidsnap.example.com",
+      "description": "Download videos from YouTube, TikTok, Instagram and other platforms for free in multiple formats and qualities.",
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
+    <script>
+        // DOM Elements
+        const urlInput = document.querySelector('.url-input-field');
+        const pasteBtn = document.getElementById('pasteBtn');
+        const fetchBtn = document.getElementById('fetchBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const previewContainer = document.getElementById('previewContainer');
+        const videoThumbnail = document.getElementById('videoThumbnail');
+        const videoTitle = document.getElementById('videoTitle');
+        const videoPlatform = document.getElementById('videoPlatform');
+        const videoDuration = document.getElementById('videoDuration');
+        const videoResolution = document.getElementById('videoResolution');
+        const qualitySelect = document.getElementById('qualitySelect');
+        const formatSelect = document.getElementById('formatSelect');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const downloadProgress = document.getElementById('downloadProgress');
+        const progressBar = document.getElementById('progressBar');
+        const progressStatus = document.getElementById('progressStatus');
+        const progressPercent = document.getElementById('progressPercent');
+        const downloadComplete = document.getElementById('downloadComplete');
+        const historySection = document.getElementById('historySection');
+        const historyList = document.getElementById('historyList');
+        const clearHistory = document.getElementById('clearHistory');
+
+        // Sample data for demonstration
+        const sampleVideos = {
+            'youtube.com': {
+                title: 'Amazing Nature Documentary',
+                platform: 'YouTube',
+                duration: '12:34',
+                resolutions: ['144p', '360p', '480p', '720p', '1080p'],
+                defaultResolution: '720p',
+                thumbnail: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg'
+            },
+            'tiktok.com': {
+                title: 'Funny Cat Compilation',
+                platform: 'TikTok',
+                duration: '0:59',
+                resolutions: ['360p', '480p', '720p'],
+                defaultResolution: '720p',
+                thumbnail: 'https://example.com/tiktok-thumbnail.jpg'
+            },
+            'instagram.com': {
+                title: 'Travel Reel - Beautiful Sunset',
+                platform: 'Instagram',
+                duration: '0:30',
+                resolutions: ['480p', '720p'],
+                defaultResolution: '720p',
+                thumbnail: 'https://example.com/instagram-thumbnail.jpg'
+            }
+        };
+
+        // Supported platforms
+        const supportedPlatforms = ['youtube.com', 'tiktok.com', 'instagram.com', 'twitter.com', 'facebook.com'];
+
+        // Download history
+        let downloadHistory = JSON.parse(localStorage.getItem('downloadHistory')) || [];
+
+        // Initialize the app
+        function init() {
+            // Load history if any exists
+            if (downloadHistory.length > 0) {
+                renderHistory();
+                historySection.style.display = 'block';
+            }
+
+            // Set up event listeners
+            pasteBtn.addEventListener('click', handlePaste);
+            fetchBtn.addEventListener('click', handleFetch);
+            downloadBtn.addEventListener('click', handleDownload);
+            clearHistory.addEventListener('click', clearAllHistory);
+            urlInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleFetch();
+                }
+            });
+            
+            // Track page view for analytics
+            trackPageView();
+        }
+
+        // Track page view
+        function trackPageView() {
+            // In a real app, you would send this to your analytics platform
+            console.log('Page viewed:', window.location.href);
+        }
+
+        // Handle paste button click
+        async function handlePaste() {
+            try {
+                const text = await navigator.clipboard.readText();
+                urlInput.value = text;
+                // Auto-fetch if the URL looks valid
+                if (isValidUrl(text)) {
+                    handleFetch();
+                }
+            } catch (err) {
+                showError("Couldn't access clipboard. Please paste manually.");
+                console.error('Failed to read clipboard:', err);
+            }
+        }
+
+        // Handle fetch button click
+        function handleFetch() {
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                showError("Please enter a video URL");
+                return;
+            }
+            
+            if (!isValidUrl(url)) {
+                showError("Please enter a valid URL");
+                return;
+            }
+            
+            // Check if platform is supported
+            const platform = getPlatform(url);
+            if (!platform || !supportedPlatforms.includes(platform)) {
+                showError("This platform is not supported yet");
+                return;
+            }
+            
+            // Hide error message if previously shown
+            hideError();
+            
+            // Simulate fetching video info (in a real app, this would be an API call)
+            simulateFetchVideoInfo(url, platform);
+        }
+
+        // Handle download button click
+        function handleDownload() {
+            const url = urlInput.value.trim();
+            const format = formatSelect.value;
+            const quality = qualitySelect.value;
+            
+            // Disable download button during download
+            downloadBtn.disabled = true;
+            downloadBtn.innerHTML = '<span class="spinner"></span> Downloading...';
+            
+            // Show progress bar
+            downloadProgress.style.display = 'block';
+            downloadComplete.style.display = 'none';
+            
+            // Track download event
+            trackDownloadEvent(url, quality, format);
+            
+            // Simulate download progress
+            simulateDownload(url, quality, format);
+        }
+
+        // Track download event
+        function trackDownloadEvent(url, quality, format) {
+            // In a real app, you would send this to your analytics platform
+            console.log('Download started:', { url, quality, format });
+        }
+
+        // Simulate fetching video info
+        function simulateFetchVideoInfo(url, platform) {
+            // Show loading state
+            previewContainer.style.display = 'none';
+            downloadBtn.innerHTML = 'Loading video info...';
+            downloadBtn.disabled = true;
+            
+            // Simulate network delay
+            setTimeout(() => {
+                const videoInfo = sampleVideos[platform] || {
+                    title: 'Sample Video',
+                    platform: platform.charAt(0).toUpperCase() + platform.slice(1).replace('.com', ''),
+                    duration: '1:23',
+                    resolutions: ['360p', '480p', '720p'],
+                    defaultResolution: '720p',
+                    thumbnail: 'https://via.placeholder.com/800x450?text=Video+Thumbnail'
+                };
+                
+                // Populate video info
+                videoTitle.textContent = videoInfo.title;
+                videoPlatform.textContent = `📺 ${videoInfo.platform}`;
+                videoDuration.textContent = `⏱️ ${videoInfo.duration}`;
+                videoResolution.textContent = `🖥️ ${videoInfo.defaultResolution}`;
+                videoThumbnail.src = videoInfo.thumbnail;
+                videoThumbnail.alt = videoInfo.title;
+                
+                // Populate quality options
+                qualitySelect.innerHTML = '';
+                videoInfo.resolutions.forEach(res => {
+                    const option = document.createElement('option');
+                    option.value = res;
+                    option.textContent = res;
+                    if (res === videoInfo.defaultResolution) {
+                        option.selected = true;
+                    }
+                    qualitySelect.appendChild(option);
+                });
+                
+                // Show preview and enable download button
+                previewContainer.style.display = 'block';
+                downloadBtn.disabled = false;
+                downloadBtn.innerHTML = 'Download Video';
+                
+                // Add to history if not already there
+                addToHistory(url, videoInfo.title, videoInfo.thumbnail, videoInfo.platform);
+                
+                // Track video preview event
+                trackPreviewEvent(url, videoInfo.title);
+            }, 800);
+        }
+
+        // Track preview event
+        function trackPreviewEvent(url, title) {
+            // In a real app, you would send this to your analytics platform
+            console.log('Video previewed:', { url, title });
+        }
+
+        // Simulate download progress
+        function simulateDownload(url, quality, format) {
+            let progress = 0;
+            const speed = Math.random() * 10 + 10; // Random download speed
+            
+            const interval = setInterval(() => {
+                progress += speed;
+                if (progress > 100) progress = 100;
+                
+                updateProgress(progress);
+                
+                if (progress === 100) {
+                    clearInterval(interval);
+                    downloadComplete.style.display = 'block';
+                    downloadProgress.style.display = 'none';
+                    downloadBtn.disabled = false;
+                    downloadBtn.innerHTML = 'Download Video';
+                    
+                    // Update history with download completion
+                    updateHistory(url, true);
+                    
+                    // Track download completion
+                    trackDownloadComplete(url, quality, format);
+                }
+            }, 200);
+        }
+
+        // Track download completion
+        function trackDownloadComplete(url, quality, format) {
+            // In a real app, you would send this to your analytics platform
+            console.log('Download completed:', { url, quality, format });
+        }
+
+        // Update progress bar
+        function updateProgress(percent) {
+            progressBar.style.width = `${percent}%`;
+            progressPercent.textContent = `${Math.round(percent)}%`;
+            
+            if (percent < 30) {
+                progressStatus.textContent = 'Starting download...';
+            } else if (percent < 70) {
+                progressStatus.textContent = 'Downloading...';
+            } else if (percent < 90) {
+                progressStatus.textContent = 'Almost done...';
+            } else {
+                progressStatus.textContent = 'Finalizing...';
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            previewContainer.style.display = 'none';
+            downloadProgress.style.display = 'none';
+        }
+
+        // Hide error message
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        // Check if URL is valid
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // Get platform from URL
+        function getPlatform(url) {
+            try {
+                const domain = new URL(url).hostname;
+                if (domain.includes('youtube.com') || domain.includes('youtu.be')) return 'youtube.com';
+                if (domain.includes('tiktok.com')) return 'tiktok.com';
+                if (domain.includes('instagram.com')) return 'instagram.com';
+                if (domain.includes('twitter.com') || domain.includes('x.com')) return 'twitter.com';
+                if (domain.includes('facebook.com')) return 'facebook.com';
+                return null;
+            } catch {
+                return null;
+            }
+        }
+
+        // Add URL to history
+        function addToHistory(url, title, thumbnail, platform) {
+            // Check if already in history
+            const existingIndex = downloadHistory.findIndex(item => item.url === url);
+            
+            if (existingIndex >= 0) {
+                // Update existing entry
+                downloadHistory[existingIndex].lastAccessed = new Date().toISOString();
+            } else {
+                // Add new entry
+                downloadHistory.unshift({
+                    url,
+                    title,
+                    thumbnail,
+                    platform,
+                    date: new Date().toISOString(),
+                    lastAccessed: new Date().toISOString(),
+                    completed: false
+                });
+                
+                // Keep only the last 10 items
+                if (downloadHistory.length > 10) {
+                    downloadHistory.pop();
+                }
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('downloadHistory', JSON.stringify(downloadHistory));
+            
+            // Update UI
+            renderHistory();
+            historySection.style.display = 'block';
+        }
+
+        // Update history item
+        function updateHistory(url, completed) {
+            const item = downloadHistory.find(item => item.url === url);
+            if (item) {
+                item.completed = completed;
+                item.lastAccessed = new Date().toISOString();
+                localStorage.setItem('downloadHistory', JSON.stringify(downloadHistory));
+                renderHistory();
+            }
+        }
+
+        // Render history list
+        function renderHistory() {
+            historyList.innerHTML = '';
+            
+            downloadHistory.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.addEventListener('click', () => {
+                    urlInput.value = item.url;
+                    handleFetch();
+                });
+                
+                historyItem.innerHTML = `
+                    <img src="${item.thumbnail}" class="history-thumbnail" alt="${item.title}">
+                    <div class="history-info">
+                        <div class="history-name">${item.title}</div>
+                        <div class="history-meta">${item.platform} • ${new Date(item.date).toLocaleDateString()}</div>
+                    </div>
+                    ${item.completed ? '✅' : '⏳'}
+                `;
+                
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        // Clear all history
+        function clearAllHistory() {
+            downloadHistory = [];
+            localStorage.removeItem('downloadHistory');
+            historyList.innerHTML = '';
+            historySection.style.display = 'none';
+        }
+
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
